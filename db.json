@@ -1,0 +1,23 @@
+{
+  "zones": {
+    "left": {
+      "type": "markdown",
+      "content": "# Updated Left"
+    },
+    "center": {
+      "type": "markdown",
+      "content": "# MY DVA Graficon\nDashboard je online: $time"
+    },
+    "right": {
+      "type": "markdown",
+      "content": "Aktuální den: $day"
+    }
+  },
+  "notifications": [
+    {
+      "message": "Hello",
+      "style": "info",
+      "timestamp": "2025-11-25T09:46:41.498Z"
+    }
+  ]
+}
