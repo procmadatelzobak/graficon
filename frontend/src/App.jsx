@@ -31,7 +31,13 @@ function App() {
           const lastNotification = notifications[notifications.length - 1];
           const notificationId = lastNotification.timestamp; // Use timestamp as ID
 
-          if (!seenNotifications.has(notificationId)) {
+          // Only show notifications younger than 20 seconds to prevent ghost notifications on page reload
+          const NOTIFICATION_MAX_AGE_MS = 20000; // 20 seconds
+          const now = Date.now();
+          const notifTime = new Date(lastNotification.timestamp).getTime();
+          const isRecent = !isNaN(notifTime) && (now - notifTime) < NOTIFICATION_MAX_AGE_MS;
+
+          if (isRecent && !seenNotifications.has(notificationId)) {
             setNotification(lastNotification);
             setSeenNotifications(prev => new Set(prev).add(notificationId));
           }
