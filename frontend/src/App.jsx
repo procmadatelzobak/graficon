@@ -16,13 +16,13 @@ function App() {
     const fetchData = async () => {
       try {
         // Fetch State
-        const stateRes = await fetch('/api/state');
+        const stateRes = await fetch('/api/state?t=' + Date.now());
         if (!stateRes.ok) throw new Error('Failed to fetch state');
         const stateData = await stateRes.json();
         setData(stateData);
 
         // Fetch Notifications
-        const notifyRes = await fetch('/api/notifications');
+        const notifyRes = await fetch('/api/notifications?t=' + Date.now());
         if (!notifyRes.ok) throw new Error('Failed to fetch notifications');
         const notifications = await notifyRes.json();
 
@@ -31,16 +31,17 @@ function App() {
           const lastNotification = notifications[notifications.length - 1];
           const notificationId = lastNotification.timestamp; // Use timestamp as ID
 
-          // Only show notifications younger than 20 seconds to prevent ghost notifications on page reload
-          const NOTIFICATION_MAX_AGE_MS = 20000; // 20 seconds
+          // Only show notifications younger than 30 seconds to prevent ghost notifications on page reload
+          const NOTIFICATION_MAX_AGE_MS = 30000; // 30 seconds
           const now = Date.now();
           const notifTime = new Date(lastNotification.timestamp).getTime();
           const isRecent = !isNaN(notifTime) && (now - notifTime) < NOTIFICATION_MAX_AGE_MS;
 
           if (isRecent && !seenNotifications.has(notificationId)) {
             setNotification(lastNotification);
-            setSeenNotifications(prev => new Set(prev).add(notificationId));
           }
+          // Always mark as seen to prevent future re-trigger
+          setSeenNotifications(prev => new Set(prev).add(notificationId));
         }
 
         setError(null);
