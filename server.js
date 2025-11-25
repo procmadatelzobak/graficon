@@ -23,19 +23,37 @@ initDB();
 
 // NEW Security Setup: Bearer Token Authentication
 // Token is stored in process.env.API_TOKEN
+// ROBUST AUTHENTICATION (Header OR Body)
 const checkToken = async (request, reply) => {
-    const authHeader = request.headers['authorization'];
+    let token = null;
 
-    // 1. Check for header presence and format
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-        reply.code(401).send({ error: 'Chybí token v hlavičce Authorization' }); // Czech error message
+    // 1. Try Authorization Header (Lenient)
+    const authHeader = request.headers['authorization'];
+    if (authHeader) {
+        if (authHeader.startsWith('Bearer ')) {
+            token = authHeader.substring(7);
+        } else {
+            token = authHeader; // Accept raw token in header
+        }
+    }
+
+    // 2. Fallback: Try Body (apiToken property)
+    // Useful when proxies strip headers
+    if (!token && request.body && typeof request.body === 'object' && request.body.apiToken) {
+        token = request.body.apiToken;
+    }
+
+    // 3. Validate
+    if (!token) {
+        console.warn('[Auth] Failed: No token found in Header or Body.');
+        // Optional: console.debug('[Auth] Headers:', request.headers);
+        reply.code(401).send({ error: 'Missing token. Send via Authorization header or "apiToken" in body.' });
         return;
     }
 
-    // 2. Extract token and validate
-    const token = authHeader.substring(7); // Remove 'Bearer '
     if (token !== process.env.API_TOKEN) {
-        reply.code(403).send({ error: 'Neplatný token' }); // Czech error message
+        console.warn('[Auth] Failed: Invalid token provided.');
+        reply.code(403).send({ error: 'Invalid token' });
         return;
     }
 };
