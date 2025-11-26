@@ -4,6 +4,7 @@ import ZoneRenderer from './components/ZoneRenderer';
 
 function App() {
   const [data, setData] = useState({
+    top: { type: 'markdown', content: '' },
     left: { type: 'markdown', content: '' },
     center: { type: 'markdown', content: '' },
     right: { type: 'markdown', content: '' }
@@ -72,19 +73,24 @@ function App() {
         </div>
       )}
 
+      {/* Top Bar (12 cols) */}
+      <div className="col-span-12 min-h-[8rem]">
+        <ZoneRenderer title="Top" content={data.top?.content} className="h-full flex flex-col justify-start pt-6" />
+      </div>
+
       {/* Left Column - Info (3 cols) */}
       <div className="col-span-3 flex flex-col gap-6">
-        <ZoneRenderer title="Info" content={data.left?.content} className="h-full flex flex-col justify-center" />
+        <ZoneRenderer title="Info" content={data.left?.content} className="h-full flex flex-col justify-start pt-6" />
       </div>
 
       {/* Center Column - Hero (6 cols) */}
       <div className="col-span-6 flex flex-col gap-6">
-        <ZoneRenderer title="Hero" content={data.center?.content} className="h-full bg-white/10 flex flex-col justify-center" />
+        <ZoneRenderer title="Hero" content={data.center?.content} className="h-full bg-white/10 flex flex-col justify-start pt-6" />
       </div>
 
       {/* Right Column - Feed (3 cols) */}
       <div className="col-span-3 flex flex-col gap-6">
-        <ZoneRenderer title="Aktuality" content={data.right?.content} className="h-full flex flex-col justify-center" />
+        <ZoneRenderer title="Aktuality" content={data.right?.content} className="h-full flex flex-col justify-start pt-6" />
       </div>
     </DashboardLayout>
   );

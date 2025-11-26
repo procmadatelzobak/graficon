@@ -1,5 +1,9 @@
 {
   "zones": {
+    "top": {
+      "type": "markdown",
+      "content": "**BREAKING NEWS:** Graficon byl úspěšně aktualizován na verzi 2.0"
+    },
     "left": {
       "type": "markdown",
       "content": "# Updated Left"

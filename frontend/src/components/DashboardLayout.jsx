@@ -12,7 +12,7 @@ const DashboardLayout = ({ children, notification, onNotificationClose }) => {
                 onClose={onNotificationClose}
             />
             <main className="pt-24 px-8 pb-8 h-screen box-border">
-                <div className="grid grid-cols-12 gap-6 h-full">
+                <div className="grid grid-cols-12 grid-rows-[auto_1fr] gap-6 h-full">
                     {children}
                 </div>
             </main>

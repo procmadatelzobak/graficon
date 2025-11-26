@@ -78,8 +78,8 @@ fastify.register(async function (fastify, opts) {
         const { id } = request.params;
         const { type, content } = request.body;
 
-        if (!['left', 'center', 'right'].includes(id)) {
-            reply.code(400).send({ error: 'Neplatná zóna (left, center, right)' });
+        if (!['top', 'left', 'center', 'right'].includes(id)) {
+            reply.code(400).send({ error: 'Neplatná zóna (top, left, center, right)' });
             return;
         }
 
