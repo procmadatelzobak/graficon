@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import DashboardLayout from './components/DashboardLayout';
 import ZoneRenderer from './components/ZoneRenderer';
 
@@ -12,6 +12,7 @@ function App() {
   const [notification, setNotification] = useState(null);
   const [seenNotifications, setSeenNotifications] = useState(new Set());
   const [error, setError] = useState(null);
+  const isFirstLoad = useRef(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,23 +30,21 @@ function App() {
 
         // Check for new notifications
         if (notifications.length > 0) {
-          const lastNotification = notifications[notifications.length - 1];
-          const notificationId = lastNotification.timestamp; // Use timestamp as ID
+          // Initial Load: Mark all as seen, don't show overlay
+          if (isFirstLoad.current) {
+            const allIds = notifications.map(n => n.timestamp);
+            setSeenNotifications(new Set(allIds));
+            isFirstLoad.current = false;
+          } else {
+            // Live Update: Check for new notifications
+            const lastNotification = notifications[notifications.length - 1];
+            const notificationId = lastNotification.timestamp;
 
-
-
-          // Only show notifications younger than 30 seconds to prevent ghost notifications on page reload
-          const NOTIFICATION_MAX_AGE_MS = 30000; // 30 seconds
-          const now = Date.now();
-          const notifTime = new Date(lastNotification.timestamp).getTime();
-          const isRecent = !isNaN(notifTime) && (now - notifTime) < NOTIFICATION_MAX_AGE_MS;
-
-
-          if (isRecent && !seenNotifications.has(notificationId)) {
-            setNotification(lastNotification);
+            if (!seenNotifications.has(notificationId)) {
+              setNotification(lastNotification);
+              setSeenNotifications(prev => new Set(prev).add(notificationId));
+            }
           }
-          // Always mark as seen to prevent future re-trigger
-          setSeenNotifications(prev => new Set(prev).add(notificationId));
         }
 
         setError(null);
