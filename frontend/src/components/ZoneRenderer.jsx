@@ -31,8 +31,13 @@ const useVariableReplacer = (content) => {
     return processedContent;
 };
 
+import { marked } from 'marked';
+
 const ZoneRenderer = ({ content, title, className }) => {
     const processedContent = useVariableReplacer(content);
+
+    // Convert Markdown to HTML
+    const htmlContent = processedContent ? marked.parse(processedContent) : '';
 
     if (!content) {
         return (
@@ -52,7 +57,7 @@ const ZoneRenderer = ({ content, title, className }) => {
             )}
             <div
                 className="prose prose-invert prose-slate max-w-none"
-                dangerouslySetInnerHTML={{ __html: processedContent }}
+                dangerouslySetInnerHTML={{ __html: htmlContent }}
             />
         </div>
     );

@@ -31,7 +31,12 @@ function App() {
           const lastNotification = notifications[notifications.length - 1];
           const notificationId = lastNotification.timestamp; // Use timestamp as ID
 
-          if (!seenNotifications.has(notificationId)) {
+          // Fix: Only show if recent (< 20 seconds)
+          const now = Date.now();
+          const notifTime = new Date(lastNotification.timestamp).getTime();
+          const isRecent = (now - notifTime) < 20000;
+
+          if (isRecent && !seenNotifications.has(notificationId)) {
             setNotification(lastNotification);
             setSeenNotifications(prev => new Set(prev).add(notificationId));
           }
